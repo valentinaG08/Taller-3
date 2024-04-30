@@ -1,52 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context=".RegisterActivity">
+    android:layout_marginTop="10dp"
+    android:padding="30dp">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily=""
+        android:textColor="#6F48F1"
+        android:textStyle="bold"
+        android:layout_marginBottom="40dp"
+        android:textSize="30dp"
+        android:text="Registro"/>
 
     <EditText
-        android:id="@+id/et_nombre"
+        android:id="@+id/etFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nombre"
-        android:inputType="text"/>
+        android:layout_below="@id/title"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
-        android:id="@+id/et_apellido"
+        android:id="@+id/etLastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Apellido"
-        android:inputType="text"
-        android:layout_below="@id/et_nombre"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/etFirstName"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
-        android:id="@+id/et_email"
+        android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
-        android:layout_below="@id/et_apellido"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/etLastName"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
         android:inputType="textPassword"
-        android:layout_below="@id/et_email"
+        android:layout_below="@id/etEmail"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/etIdentificationNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etPassword"
+        android:hint="Número de identificación"
+        android:inputType="text"/>
+
+    <EditText
+        android:id="@+id/etLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Latitud"
+        android:layout_below="@id/etIdentificationNumber"
+        android:inputType="numberDecimal"/>
+
+    <EditText
+        android:id="@+id/etLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Longitud"
+        android:layout_below="@id/etLatitude"
+        android:inputType="numberDecimal"/>
+
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Registrar"
+        android:layout_below="@id/etLongitude"
         android:layout_marginTop="16dp"/>
 
     <Button
-        android:id="@+id/btn_register"
+        android:id="@+id/btnSelectImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrarse"
-        android:layout_below="@id/et_password"
+        android:text="Seleccionar imagen de perfil"
+        android:layout_below="@id/btnRegister"
+        android:layout_marginTop="16dp"/>
+
+    <ImageView
+        android:id="@+id/ivSelectedImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/btnSelectImage"
         android:layout_marginTop="16dp"
-        android:layout_centerHorizontal="true"/>
+        android:scaleType="centerCrop"/>
 
 </RelativeLayout>
