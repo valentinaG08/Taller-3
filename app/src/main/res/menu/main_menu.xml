@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Cerrar sesión"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_set_available"
+        android:title="Establecer disponible"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_set_unavailable"
+        android:title="Establecer no disponible"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_view_users"
+        android:title="Ver usuarios disponibles"
+        app:showAsAction="ifRoom" />
+</menu>
