@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F4F4F4"
+    android:background="#F2F5FB"
     android:gravity="center_vertical"
     tools:context=".LoginActivity">
     <TextView
@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
         android:text="Entra a tu cuenta"
-        android:textColor="#5433C0"
+        android:textColor="#3772E0"
         android:textSize="30dp"
         android:textStyle="normal"
         android:layout_gravity="center_horizontal"
@@ -53,11 +53,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
+        android:textAllCaps="false"
         android:background="@drawable/rounded_button"
         android:layout_marginLeft="90dp"
         android:layout_marginRight="90dp"
         android:layout_marginTop="20dp"
         android:textSize="20dp"
+        android:textColor="#5A5165"
         android:layout_marginBottom="20dp"/>
 
     <TextView
