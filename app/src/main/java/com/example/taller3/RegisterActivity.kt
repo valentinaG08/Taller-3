@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.taller3.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -19,19 +20,9 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var storage: FirebaseStorage
-    val btnRegister = findViewById<Button>(R.id.btn_register)
-    val btnSelectImage = findViewById<Button>(R.id.btnSelectImage)
-    val etEmail = findViewById<EditText>(R.id.etEmail)
-    val etPassword = findViewById<EditText>(R.id.etPassword)
-    val etFirstName = findViewById<EditText>(R.id.etFirstName)
-    val etLastName = findViewById<EditText>(R.id.etLastName)
-    val etIdentificationNumber = findViewById<EditText>(R.id.etIdentificationNumber)
-    val etLatitude = findViewById<EditText>(R.id.etLatitude)
-    val etLongitude = findViewById<EditText>(R.id.etLongitude)
-    val ivSelectedImage = findViewById<ImageView>(R.id.ivSelectedImage)
-
-
     private var selectedImageUri: Uri? = null
+
+    private lateinit var binding: ActivityRegisterBinding;
 
     companion object {
         private const val TAG = "RegisterActivity"
@@ -40,27 +31,35 @@ class RegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+
+        binding = ActivityRegisterBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        btnRegister.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             performRegister()
         }
 
-        btnSelectImage.setOnClickListener {
+        binding.btnSelectImage.setOnClickListener {
             selectImage()
         }
     }
 
     private fun performRegister() {
-        val email = etEmail.text.toString()
-        val password = etPassword.text.toString()
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Por favor, ingrese correo electrónico y contraseña", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (selectedImageUri == null) {
+            Toast.makeText(this, "Seleccione una foto porfavor", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -69,12 +68,13 @@ class RegisterActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         // Registro exitoso
                         Log.d(TAG, "createUserWithEmail:success")
+                        Toast.makeText(baseContext, "Guardando datos...", Toast.LENGTH_SHORT).show();
                         val user = auth.currentUser
                         saveUserDataToDatabase(user?.uid)
                     } else {
                         // Fallo en el registro
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                        Toast.makeText(baseContext, "Fallo en la autenticación.",
+                        Toast.makeText(baseContext, "Falló el registro del usuario.",
                                 Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -83,11 +83,11 @@ class RegisterActivity : AppCompatActivity() {
     private fun saveUserDataToDatabase(userId: String?) {
         userId?.let {
             val ref = database.getReference("users").child(it)
-            val firstName = etFirstName.text.toString()
-            val lastName = etLastName.text.toString()
-            val identificationNumber = etIdentificationNumber.text.toString()
-            val latitude = etLatitude.text.toString().toDoubleOrNull()
-            val longitude = etLongitude.text.toString().toDoubleOrNull()
+            val firstName = binding.etFirstName.text.toString()
+            val lastName = binding.etLastName.text.toString()
+            val identificationNumber = binding.etIdentificationNumber.text.toString()
+            val latitude = binding.etLatitude.text.toString().toDoubleOrNull()
+            val longitude = binding.etLongitude.text.toString().toDoubleOrNull()
 
             val userData = HashMap<String, Any>()
             userData["firstName"] = firstName
@@ -119,7 +119,7 @@ class RegisterActivity : AppCompatActivity() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             selectedImageUri = data.data
             selectedImageUri?.let {
-                ivSelectedImage.setImageURI(it)
+                binding.ivSelectedImage.setImageURI(it)
             }
         }
     }

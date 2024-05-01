@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.example.taller3.databinding.ActivityLoginBinding
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,7 +21,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Inicializar Firebase Auth
-        auth = FirebaseAuth.getInstance()
+        auth = Firebase.auth
+
 
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
@@ -53,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
         if (currentUser != null) {
             // El usuario ha iniciado sesión
             startActivity(Intent(this, MapActivity::class.java))
-            finish()
         } else {
             Toast.makeText(baseContext, "No se pudo iniciar sesión.", Toast.LENGTH_SHORT).show()
         }
