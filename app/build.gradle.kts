@@ -40,6 +40,7 @@ android {
 
 dependencies {
 
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")

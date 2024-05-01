@@ -10,15 +10,20 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.taller3.databinding.ActivityMapBinding
+import com.example.taller3.utils.Firebase.RealtimeCRUD
 import com.example.taller3.utils.JSONReader.JSONReader
 import com.example.taller3.utils.schemas.Location
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.osmdroid.api.IMapController
@@ -125,38 +130,69 @@ class MapActivity : AppCompatActivity() {
                 addMarker(userLocation!!.latitude, userLocation!!.longitude, "My location")
                 mapController.setZoom(12.5)
                 mapController.setCenter(userLocation)
+
+                RealtimeCRUD(Firebase.database).writeUserLocation(
+                    Firebase.auth.currentUser!!.uid,
+                    userLocation!!.latitude,
+                    userLocation!!.longitude,
+                ) { error, res ->
+                    if (error != null) Log.i("ERROR", "ESTO SE JODIO")
+                }
             }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater : MenuInflater = menuInflater
-        inflater.inflate(R.menu.main_menu, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection.
         return when (item.itemId) {
             R.id.menu_logout -> {
-                Firebase.auth.signOut()
-                val intent = Intent(baseContext, MainActivity::class.java)
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity( intent )
+                logout()
                 true
             }
             R.id.menu_set_available -> {
-
+                setStatus(true)
                 true
             }
             R.id.menu_set_unavailable -> {
+                setStatus(false)
                 true
             }
-
             R.id.menu_view_users -> {
+                startActivity(Intent(this, UserActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun logout() {
+        Firebase.auth.signOut()
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun setStatus(isAvailable: Boolean) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+
+            val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
+            userRef.child("available").setValue(isAvailable)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val status = if (isAvailable) "disponible" else "no disponible"
+                        showToast("Establecerse como $status")
+                    } else {
+                        showToast("Error al establecer el estado: ${task.exception?.message}")
+                    }
+                }
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

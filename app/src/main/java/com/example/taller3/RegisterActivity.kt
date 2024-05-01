@@ -11,8 +11,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.taller3.databinding.ActivityRegisterBinding
+import com.example.taller3.utils.Firebase.RealtimeCRUD
+import com.example.taller3.utils.schemas.User
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 
 class RegisterActivity : AppCompatActivity() {
@@ -82,29 +86,32 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun saveUserDataToDatabase(userId: String?) {
         userId?.let {
-            val ref = database.getReference("users").child(it)
             val firstName = binding.etFirstName.text.toString()
             val lastName = binding.etLastName.text.toString()
-            val identificationNumber = binding.etIdentificationNumber.text.toString()
+            val identificationNumber = binding.etIdentificationNumber.text.toString().toLong()
             val latitude = binding.etLatitude.text.toString().toDoubleOrNull()
             val longitude = binding.etLongitude.text.toString().toDoubleOrNull()
 
-            val userData = HashMap<String, Any>()
-            userData["firstName"] = firstName
-            userData["lastName"] = lastName
-            userData["identificationNumber"] = identificationNumber
-            userData["latitude"] = latitude ?: 0.0
-            userData["longitude"] = longitude ?: 0.0
+            val user = User(
+                id = userId,
+                firstName = firstName,
+                identificationNumber= identificationNumber,
+                available = false,
+                imagenId = userId,
+                lastName = lastName,
+                longitude = longitude!!,
+                latitude = latitude!!
+            )
 
-            ref.setValue(userData)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "User data saved to database")
-                        uploadImageToStorage(userId)
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(TAG, "Error saving user data to database", e)
-                        Toast.makeText(this, "Error al guardar datos de usuario", Toast.LENGTH_SHORT).show()
-                    }
+            RealtimeCRUD(Firebase.database).writeUser(userId, user) {
+                if (it == null) {
+                    Log.d(TAG, "User data saved to database")
+                    uploadImageToStorage(userId)
+                } else {
+                    Log.e(TAG, "Error saving user data to database")
+                    Toast.makeText(this, "Error al guardar datos de usuario", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

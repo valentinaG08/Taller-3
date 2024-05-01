@@ -9,6 +9,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.taller3.utils.schemas.User
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
 
 class UserAdapter(private var users: List<User>, private val context: Context, private val onClickListener: (User) -> Unit) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -30,8 +34,15 @@ class UserAdapter(private var users: List<User>, private val context: Context, p
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val currentUser = users[position]
-        holder.imageUser.setImageResource(currentUser.imagenId)
-        holder.textName.text = "${currentUser.nombre}"
+
+        val imageReference = Firebase.storage.reference.child("images").child(currentUser.id)
+
+        Glide
+            .with(holder.imageUser)
+            .load(imageReference)
+            .into(holder.imageUser)
+        //holder.imageUser.setImageResource(currentUser.imagenId!!.toInt())
+        holder.textName.text = "${currentUser.firstName}"
         holder.btnViewLocation.setOnClickListener { onClickListener(currentUser) }
     }
 
