@@ -1,5 +1,6 @@
 package com.example.taller3
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ class UserActivity : AppCompatActivity() {
     private lateinit var adapter: UserAdapter
     private lateinit var firestore: FirebaseFirestore
     private lateinit var userListener: ListenerRegistration
+    val users = mutableListOf<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,13 +24,20 @@ class UserActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = UserAdapter(emptyList()) { usuario ->
-            // Implementar ver ubicación del usuario en tiempo real aqui
-            showToast("Clic en usuario: ${usuario.nombre}")
+        adapter = UserAdapter(users, this) { user ->
+            showToast("Clic en usuario: ${user.nombre}")
+            viewUserLocation(user)
         }
         recyclerView.adapter = adapter
 
         firestore = FirebaseFirestore.getInstance()
+    }
+
+    //Implementar en el mapa
+    private fun viewUserLocation(user: User) {
+        val intent = Intent(this, UserLocationActivity::class.java)
+        intent.putExtra("userId", user.id)
+        startActivity(intent)
     }
 
     override fun onStart() {
@@ -48,24 +57,22 @@ class UserActivity : AppCompatActivity() {
                     showToast("Error al obtener usuarios: ${exception.message}")
                     return@addSnapshotListener
                 }
-
-                val usuarios = mutableListOf<User>()
                 snapshot?.let { documentSnapshot ->
                     for (change in documentSnapshot.documentChanges) {
-                        val usuario = change.document.toObject(User::class.java)
+                        val user = change.document.toObject(User::class.java)
                         when (change.type) {
-                            DocumentChange.Type.ADDED -> usuarios.add(usuario)
+                            DocumentChange.Type.ADDED -> users.add(user)
                             DocumentChange.Type.MODIFIED -> {
-                                val index = usuarios.indexOfFirst { it.id == usuario.id }
+                                val index = users.indexOfFirst { it.id == user.id }
                                 if (index != -1) {
-                                    usuarios[index] = usuario
+                                    users[index] = user
                                 }
                             }
-                            DocumentChange.Type.REMOVED -> usuarios.remove(usuario)
+                            DocumentChange.Type.REMOVED -> users.remove(user)
                         }
                     }
                 }
-                adapter.setUsers(usuarios)
+                adapter.setUsers(users)
             }
     }
 

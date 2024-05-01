@@ -6,13 +6,13 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/image_usuario"
+        android:id="@+id/imageUser"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:src="@drawable/ic_user" />
 
     <TextView
-        android:id="@+id/text_nombre"
+        android:id="@+id/textName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -20,7 +20,7 @@
         android:textSize="16sp" />
 
     <Button
-        android:id="@+id/btn_ver_ubicacion"
+        android:id="@+id/btnViewLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ver Ubicación" />

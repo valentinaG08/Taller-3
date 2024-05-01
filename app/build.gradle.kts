@@ -59,4 +59,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("androidx.databinding:databinding-runtime:8.3.2")
     implementation ("org.osmdroid:osmdroid-android:6.1.14")
+    implementation ("com.google.code.gson:gson:2.8.8")
 }
